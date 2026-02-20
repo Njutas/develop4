@@ -1,52 +1,53 @@
-/*
- *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
-
 'use strict';
 
 const snapshotButton = document.querySelector('button#snapshot');
 const filterSelect = document.querySelector('select#filter');
 const slider = document.querySelector('#threshold');
 const threshVal = document.querySelector('#threshVal');
-// Put variables in global scope to make them available to the browser console.
-const video = window.video = document.querySelector('video');
-const canvas = window.canvas = document.querySelector('canvas');
-canvas.width = 480;
-canvas.height = 360;
+const video = document.querySelector('video');
+const canvas = document.querySelector('canvas');
 
-slider.oninput = function(){
+canvas.width = 640;
+canvas.height = 640;
+
+slider.oninput = function() {
     const val = slider.value;
-    threshVal.innerText = val;
-
-    video.style.setProperty('--hue-value', val + 'deg');
-    canvas.style.setProperty('--hue-value', val + 'deg');
+    const intensity = val / 360; 
+    threshVal.innerText = Math.round(intensity * 100) + '%';
+    video.style.setProperty('--intensity', intensity);
 };
 
 snapshotButton.onclick = function() {
-  canvas.className = filterSelect.value;
-  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    const context = canvas.getContext('2d');
+    
+    canvas.style.setProperty('--intensity', slider.value / 360);
+    canvas.className = filterSelect.value;
+
+    context.filter = getComputedStyle(video).filter;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const dataURL = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = dataURL;
+    link.download = `Ekranvaizdis_${new Date().getTime()}.png`;
+    link.click();
 };
 
 filterSelect.onchange = function() {
-  video.className = filterSelect.value;
+    video.className = filterSelect.value;
 };
 
 const constraints = {
-  audio: false,
-  video: true
+    audio: false,
+    video: { width: 640, height: 640 }
 };
 
 function handleSuccess(stream) {
-  window.stream = stream; // make stream available to browser console
-  video.srcObject = stream;
+    video.srcObject = stream;
 }
 
 function handleError(error) {
-  console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
+    console.error('Error: ', error);
 }
 
 navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
