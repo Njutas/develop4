@@ -38,3 +38,8 @@ You can try to use these file servers:
   - HFS: http://www.rejetto.com/hfs/ or any other server.
 Proxy http to https:
   - https://technique.arscenic.org/lamp-linux-apache-mysql-php/apache-le-serveur-http/modules-complementaires/article/installer-et-configurer-le-module-ssl-pour-apache2?fbclid=IwAR1_nXNQlrMIdJ5tilVUyr45xeiA91yw21vhnMxWHnuvY01VTd2FVR_T2ao  
+
+
+  # Testavimo aplinkos
+  - Chrome. Versija: 144.0.7559.133
+  - Microsoft edge. Versija: 145.0.3800.58
